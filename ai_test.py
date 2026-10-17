@@ -11,7 +11,7 @@ pygame.init() #this is for display
 #  ^^^^^^^Importing in built functions and my classes for python^^^^^
 
 #-----------------------------------------------------------------------------------setup vvv
-width, height = 800, 600
+width, height = 800, 700
 screen = pygame.display.set_mode((width, height))
 my_font = pygame.font.Font(None, 50)
 screen.fill((0, 0, 0))
