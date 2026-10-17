@@ -89,7 +89,6 @@ def run():
        
 
         #my_ai.W_AB += change
-        # Move the character step-by-step using your newly fixed delta values
         my_ai.x += my_ai.delta_x
         my_ai.y += my_ai.delta_y
         delta_pos_sqrd = (my_ai.delta_x**2 + my_ai.delta_y**2)
@@ -100,7 +99,7 @@ def run():
         my_ai.total_energy_used += energy_used
 
         survival_reward = tick * 1.0//10
-        energy_penalty = 0#my_aitotal_energy_used * 0.001
+        energy_penalty = 0 #my_aitotal_energy_used * 0.001
         food_bonus = my_ai.food_eaten_count * 500.0 
         #my_ai.total_fitness = survival_reward + food_bonus - energy_penalty
         #print("fitness   ", my_ai.total_fitness)
