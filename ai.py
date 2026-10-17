@@ -8,10 +8,8 @@ val = 7
 arr = np.full((3, 4), val)
 
 class ai:
-    def __init__(self, name, x, y, desired_x, desired_y, size, colour):
-        self.firstNum = 3
-        self.secondNum = 4
-        self.thridNum = 3
+    def __init__(self, name, x, y, size, colour):
+     
         self.name = name
         self.hunger = 0
         self.x = x - size/2
@@ -22,7 +20,7 @@ class ai:
         self.B_bias = np.full(self.matrix_size[1], 0)
         self.C_bias = np.full(self.matrix_size[2], 0)
         self.alive = 1
-    
+        self.total_food_eaten = 0
         self.W_AB = np.random.randn(self.matrix_size[0], self.matrix_size[1]) # Random weight numbers
         self.W_BC = np.random.randn(self.matrix_size[1], self.matrix_size[2])
 
@@ -32,7 +30,7 @@ class ai:
         self.current_outputs = self.C_bias
         self.x_dif  = 0
         self.y_dif = 0
-        
+        self.total_energy_used = 0
         self.last_total_loss = 10000
         self.lastABRowChange = 0
         self.lastABColChange = 0
@@ -41,10 +39,7 @@ class ai:
         self.food_eaten_count = 0
         self.has_undone = 0
 
-        self.firstNodeList = [Node(), Node(), Node(), Node()]
-        self.secondNodeList = [Node(), Node(), Node(), Node()]
-        self.thirdNodeList = [Node(), Node(), Node(), Node()]
-        self.link_nodes()
+
 
     def run(self,inputs):
         inputs = np.array(inputs)
