@@ -39,7 +39,14 @@ class ai:
         self.food_eaten_count = 0
         self.has_undone = 0
 
+    def gaus_random(self):
+        # apply random noise to traits
+        adjustmentsAB = np.random.normal(loc=0, scale=0.02, size=(self.matrix_size[0], self.matrix_size[1]))
+        adjustmentsBC = np.random.normal(loc=0, scale=0.02, size=(self.matrix_size[1], self.matrix_size[0]))
 
+        # Add them together instantly (element-by-element)
+        self.W_AB += adjustmentsAB
+        self.W_BC += adjustmentsBC
 
     def run(self,inputs):
         inputs = np.array(inputs)
@@ -57,13 +64,13 @@ class ai:
         self.delta_y = self.current_outputs[1] * speed_cap
 
         return C_squashed
-    
+
     def relu(self, x):
         y = []
         for i in x:
             y.append(max(0,i))
         return np.array(y)
-    
+
     def link_nodes(self):
         for i in self.firstNodeList:
             for j in self.secondNodeList:
