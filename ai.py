@@ -23,10 +23,10 @@ class ai:
         self.total_food_eaten = 0
         self.W_AB = W_AB 
         self.W_BC = W_BC 
-
+        self.current_ratio =1
         self.updateamnt = 0
         self.last_total_fitness = -10000
-
+        self.next_amnt_children = 0
         self.current_outputs = self.C_bias
         self.x_dif  = 0
         self.y_dif = 0
@@ -138,5 +138,5 @@ class ai:
 
     def update_hunger(self):
         self.hunger +=1
-        if self.hunger > 1000:
+        if self.hunger > 500:
             self.alive = 0 
