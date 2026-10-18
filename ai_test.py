@@ -19,10 +19,14 @@ screen.fill((0, 0, 0))
 #--------------- Screen display^^^^^
 
 AI_list= []
-my_ai = ai("my_ai", 100, 100, 50, (70, 130, 180)) # (name, x =100, y =100, size, colour)
+matrix_size = [3, 4, 3]
+W_AB = np.random.randn(matrix_size[0], matrix_size[1]) # Random weight number
+W_BC = np.random.randn(matrix_size[1], matrix_size[2])
+
+my_ai = ai("my_ai", 100, 100, 50, (70, 130, 180), W_AB, W_BC) # (name, x =100, y =100, size, colour)
 for i in range(5):
     # Create a brand new instance so its functions are perfectly intact
-    new_ai = ai(f"ai_{i}", 100, 100, 50, (70, 130, 180))
+    new_ai = ai(f"ai_{i}", 100, 100, 50, (70, 130, 180), W_AB, W_BC)
     
     # 3. Safely copy ONLY the numerical neural network weights/matrices
     # Change 'W_AB' to whatever the exact name of your weight matrix is inside your ai class!
@@ -42,7 +46,6 @@ running = True
 # Function Setup vvvvvvvv   (skip to run for context)
 
 def find_food(this_ai):
-    print(this_ai)
     x_dif = (food.x + (food.size//2)) - (this_ai.x + (this_ai.size//2))
     y_dif = (food.y + (food.size//2)) - (this_ai.y + (this_ai.size//2))
     this_ai.x_dif = x_dif
@@ -90,20 +93,16 @@ def run():
         tick+=1 # time measure
         hunger = 0.5
         for this_ai in AI_list:
-            print(this_ai.x)
             x_error, y_error = find_food(this_ai)
-            inputs = [this_ai.x_dif, this_ai.y_dif, 0]
-            outputs = this_ai.run(inputs)
+            this_ai.run()
             this_ai.update_hunger()
+            check_collision(this_ai)
 
-        # this is for future
+            # this is for future
             learning_rate = 1
-            changeAB = learning_rate *  np.outer(inputs, [x_error, y_error, 0,0])
+            #changeAB = learning_rate *  np.outer(inputs, [x_error, y_error, 0,0])
         
 
-            #my_ai.W_AB += change
-            this_ai.x += this_ai.delta_x
-            this_ai.y +=this_ai.delta_y
             delta_pos_sqrd = (this_ai.delta_x**2 + this_ai.delta_y**2)
         
 
@@ -111,12 +110,11 @@ def run():
             this_ai.hunger += energy_used
             this_ai.total_energy_used += energy_used
 
-            survival_reward = tick * 1.0//10
+            survival_reward = 0 #tick * 1.0//10
             energy_penalty = 0 #my_aitotal_energy_used * 0.001
             food_bonus = this_ai.food_eaten_count * 500.0 
             #my_ai.total_fitness = survival_reward + food_bonus - energy_penalty
             #print("fitness   ", my_ai.total_fitness)
-            check_collision(this_ai)
             if this_ai.alive == 0:
                 food_pen = 10*math.sqrt(find_food(this_ai)[0]**2 + find_food(this_ai)[1]**2)
                 this_ai.total_fitness = survival_reward + food_bonus - energy_penalty - food_pen

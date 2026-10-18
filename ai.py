@@ -8,7 +8,7 @@ val = 7
 arr = np.full((3, 4), val)
 
 class ai:
-    def __init__(self, name, x, y, size, colour):
+    def __init__(self, name, x, y, size, colour, W_AB, W_BC):
      
         self.name = name
         self.hunger = 0
@@ -21,8 +21,8 @@ class ai:
         self.C_bias = np.full(self.matrix_size[2], 0)
         self.alive = 1
         self.total_food_eaten = 0
-        self.W_AB = np.random.randn(self.matrix_size[0], self.matrix_size[1]) # Random weight numbers
-        self.W_BC = np.random.randn(self.matrix_size[1], self.matrix_size[2])
+        self.W_AB = W_AB 
+        self.W_BC = W_BC 
 
         self.updateamnt = 0
         self.last_total_fitness = -10000
@@ -48,8 +48,8 @@ class ai:
         self.W_AB += adjustmentsAB
         self.W_BC += adjustmentsBC
 
-    def run(self,inputs):
-        inputs = np.array(inputs)
+    def run(self):
+        inputs = np.array([self.x_dif, self.y_dif, 0])
         #print("DEBUG INPUTS:", inputs)
         B = self.relu(inputs @ self.W_AB + self.B_bias)
         #print("DEBUG BBBBBB:", B)
@@ -63,7 +63,10 @@ class ai:
         self.delta_x = self.current_outputs[0] * speed_cap
         self.delta_y = self.current_outputs[1] * speed_cap
 
-        return C_squashed
+        self.x += self.delta_x
+        self.y += self.delta_y
+        
+
 
     def relu(self, x):
         y = []
