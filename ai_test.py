@@ -105,8 +105,7 @@ def run():
             x_error, y_error = find_food(this_ai)
             this_ai.run()
             this_ai.update_hunger()
-            print(this_ai.hunger)
-            print(this_ai.alive)
+      
 
             check_collision(this_ai)
         
