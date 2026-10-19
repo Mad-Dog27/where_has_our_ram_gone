@@ -25,7 +25,7 @@ matrix_size = [3, 4, 3]
 
 
 #my_ai = ai("my_ai", 100, 100, 50, (70, 130, 180), W_AB, W_BC) # (name, x =100, y =100, size, colour)
-for i in range(5):
+for i in range(10):
     W_AB = np.random.randn(matrix_size[0], matrix_size[1]) # Random weight number
     W_BC = np.random.randn(matrix_size[1], matrix_size[2])
     # Create a brand new instance so its functions are perfectly intact
@@ -59,10 +59,10 @@ def check_collision(this_ai):
     cx = this_ai.x + (this_ai.size / 2) # ai centre calc
     cy = this_ai.y + (this_ai.size / 2)
     for m in range(len(food_list) - 1, -1, -1):   # This is helpful: for loop but USUALLY 'm' is not an index it is the actual object, in this case it is the index as length (len) was used
-            food = food_list[m]
+            this_food = food_list[m]
     
-            dx = (food.x + food.size / 2) - cx # food centre calc
-            dy = (food.y + food.size / 2) - cy
+            dx = (this_food.x + this_food.size / 2) - cx # food centre calc
+            dy = (this_food.y + this_food.size / 2) - cy
             dist = math.sqrt(dx**2 + dy**2)
     
             if dist < (this_ai.size / 2):
@@ -105,7 +105,7 @@ def run():
             x_error, y_error = find_food(this_ai)
             this_ai.run()
             this_ai.update_hunger()
-      
+
 
             check_collision(this_ai)
         
@@ -113,26 +113,17 @@ def run():
             learning_rate = 1
             #changeAB = learning_rate *  np.outer(inputs, [x_error, y_error, 0,0])
         
-
-            this_ai.delta_pos_sqrd = (this_ai.x_dif**2 + this_ai.y_dif**2)
-            print(this_ai.x_dif**2 + this_ai.y_dif**2)
-          
-            #my_ai.total_fitness = survival_reward + food_bonus - energy_penalty
-            #print("fitness   ", my_ai.total_fitness)
-            
-
+            # score
+            this_ai.delta_pos_sqrd = math.sqrt(this_ai.x_dif**2 + this_ai.y_dif**2)
         
-
             
 
             pygame.draw.rect(screen, (this_ai.colour), (this_ai.x, this_ai.y, this_ai.size, this_ai.size))
             for this_food in food_list:
 
                 pygame.draw.rect(screen, (0, 255,0), (this_food.x, this_food.y, this_food.size, this_food.size))
-        print("sum: ", alive_sum)
         if alive_sum <1:
              running = False
-        print("running: ", running)
 
         # Clear the screen with a background color (e.g., Black)
 
@@ -146,47 +137,49 @@ if check == 0:
     run()
     check +=1
 
-
+# ------------------------------- SCORING ---------------------------------
 i = 0
 sum = 0
 score = []
 ratio = []
-
-for this_ai in AI_list:
-    
+# getting raw distance and storing in list (maybe redundant, could do in run loop)
+for this_ai in AI_list: 
     score.append(this_ai.delta_pos_sqrd)
-    sum += score[i]
+    sum += score[i]    
     print("ai_num  ", this_ai.name)
-    print("score: ", this_ai.delta_pos_sqrd)
+    print("Score : ", score[i])
     i+=1
 i = 0
-for this_ai in AI_list:
-    
-    this_ai.current_ratio = (1-score[i]/sum)
-    ratio.append(this_ai.current_ratio)
-    print("ai_num  ", this_ai.name)
-    print("score: ", this_ai.delta_pos_sqrd)
+sum =0
+max_score = max(score)
+# after finding max distance from all AI (the furthest distance) then subtract all AI distances off of the max
+for this_ai in AI_list: 
+    score[i] = max_score - score[i]
+    sum += score[i]    
+    i+=1
+i = 0
 
-    print("ratio: ", this_ai.current_ratio)
+#(max_distance - this_ai.distance) / (maxdis - ALL_ai_dist_summed) - this means the ai with the best score is weighted maissivly, and the ai with max distance gets 0
+for this_ai in AI_list:
+    this_ai.current_ratio = score[i]/sum
+    ratio.append(this_ai.current_ratio)
     i +=1
-total_sum =0
+
+print(" ---------------------------------------------------------------- ")
+
 for j in range(len(ratio)):
     i=0
+    total_sum = 0
+    random_stat = random.uniform(0, 1)
     for i in range(len(ratio)):
-        random_stat = np.random.rand()
+        
         this_ai= AI_list[i]
-        print("ai_num  ", this_ai.name)
-        print("RANDOMSTAT: ", random_stat)
-        print("this ratio : ", this_ai.current_ratio)
-        print("this Sum : ", total_sum)
-        print("  ")
-
         if random_stat < ratio[i] + total_sum:
             if random_stat > total_sum:
                 this_ai.next_amnt_children +=1
-                print("YES")
-                print("  ")
                 break
+        else:
+             total_sum += ratio[i]
         i+=1
 
 for this_ai in AI_list:
