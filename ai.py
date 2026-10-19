@@ -19,6 +19,7 @@ class ai:
         self.matrix_size = [3, 4, 3]
         self.B_bias = np.full(self.matrix_size[1], 0)
         self.C_bias = np.full(self.matrix_size[2], 0)
+        self.delta_pos_sqrd = 0
         self.alive = 1
         self.total_food_eaten = 0
         self.W_AB = W_AB 
@@ -138,5 +139,5 @@ class ai:
 
     def update_hunger(self):
         self.hunger +=1
-        if self.hunger > 500:
+        if self.hunger > 2000:
             self.alive = 0 
