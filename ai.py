@@ -8,7 +8,7 @@ val = 7
 arr = np.full((3, 4), val)
 
 class ai:
-    def __init__(self, name, x, y, size, colour, W_AB, W_BC):
+    def __init__(self, name, x, y, size, colour, W_AB, W_BC, food_list):
      
         self.name = name
         self.hunger = 0
@@ -40,6 +40,16 @@ class ai:
         self.food_eaten_count = 0
         self.has_undone = 0
 
+        self.food_list = food_list
+        self.current_food_index = 0
+        self.current_food = self.food_list[self.current_food_index]
+    def next_food(self):
+        self.current_food_index +=1
+        if self.current_food_index == len(self.food_list):
+            self.current_food_index = 0
+        self.current_food = self.food_list[self.current_food_index]
+
+        
     def gaus_random(self):
         # apply random noise to traits
         adjustmentsAB = np.random.normal(loc=0, scale=0.02, size=(self.matrix_size[0], self.matrix_size[1]))
@@ -117,11 +127,10 @@ class ai:
         else:
             self.W_AB[self.lastABRowChange, self.lastABColChange] += self.updateamnt
 
-    def reset(self, x, y, size):
+    def reset(self):
         
         self.hunger = 0
-        self.x = x - size/2
-        self.y = y - size /2
+    
         self.delta_x = 0
         self.delta_y = 0
 
@@ -141,3 +150,5 @@ class ai:
         self.hunger +=1
         if self.hunger > 2000:
             self.alive = 0 
+            self.delta_x = 0
+            self.delta_y = 0
